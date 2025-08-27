@@ -40,10 +40,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // --- DATA HANDLING WITH FIREBASE --- //
         async _loadData() {
-            const snapshot = await database.ref().once('value');
-            const data = snapshot.val() || {};
-            this.mealData = data.mealData || { "Abid Hossain": {}, "Ahsan Ansari": {} };
-            this.paymentData = data.paymentData || { "Abid Hossain": [], "Ahsan Ansari": [] };
+            try {
+                const snapshot = await database.ref().once('value');
+                const data = snapshot.val() || {};
+                this.mealData = data.mealData || { "Abid Hossain": {}, "Ahsan Ansari": {} };
+                this.paymentData = data.paymentData || { "Abid Hossain": [], "Ahsan Ansari": [] };
+            } catch (error) {
+                console.error("Firebase load failed:", error);
+                alert("Could not connect to the database. Please check your internet connection and Firebase setup.");
+            }
         }
 
         _saveMealData() {
@@ -228,8 +233,10 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (this.editingPaymentId) {
                 const paymentIndex = this.paymentData[this.currentUser].findIndex(p => p.id == this.editingPaymentId);
-                this.paymentData[this.currentUser][paymentIndex].amount = amount;
-                this.paymentData[this.currentUser][paymentIndex].date = date;
+                if (paymentIndex > -1) {
+                    this.paymentData[this.currentUser][paymentIndex].amount = amount;
+                    this.paymentData[this.currentUser][paymentIndex].date = date;
+                }
             } else {
                 this.paymentData[this.currentUser].push({ id: Date.now(), amount, date });
             }
