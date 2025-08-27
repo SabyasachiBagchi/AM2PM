@@ -1,14 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Firebase Configuration ---
-    // IMPORTANT: Replace these with your own Firebase project configuration!
+    // --- Firebase Configuration with YOUR keys ---
     const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-        databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_PROJECT_ID.appspot.com",
-        messagingSenderId: "YOUR_SENDER_ID",
-        appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyCCh25_zp7hIkWEmRhOgUejqMfQhe5lnBs",
+      authDomain: "am2pm-ecdb4.firebaseapp.com",
+      databaseURL: "https://am2pm-ecdb4-default-rtdb.firebaseio.com/", // Correct URL for Realtime Database
+      projectId: "am2pm-ecdb4",
+      storageBucket: "am2pm-ecdb4.appspot.com",
+      messagingSenderId: "237983268562",
+      appId: "1:237983268562:web:22b0194edda7f944dbb70b"
     };
 
     // Initialize Firebase
@@ -17,19 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     class FoodServiceApp {
         constructor() {
-            // State
             this.isAdmin = false;
             this.currentUser = '';
             this.loggedInUser = '';
             this.currentDate = new Date();
             this.selectedDate = null;
             this.editingPaymentId = null;
-
-            // Data
             this.users = ["Abid Hossain", "Ahsan Ansari"];
             this.mealRate = 45;
-            
-            // Data will be loaded from Firebase
             this.mealData = {};
             this.paymentData = {};
             
@@ -48,8 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
         async _loadData() {
             const snapshot = await database.ref().once('value');
             const data = snapshot.val() || {};
-            this.mealData = data.mealData || {};
-            this.paymentData = data.paymentData || {};
+            this.mealData = data.mealData || { "Abid Hossain": {}, "Ahsan Ansari": {} };
+            this.paymentData = data.paymentData || { "Abid Hossain": [], "Ahsan Ansari": [] };
         }
 
         _saveMealData() {
@@ -60,13 +54,10 @@ document.addEventListener('DOMContentLoaded', () => {
             database.ref('paymentData').set(this.paymentData);
         }
         
-        // Event listeners and other methods remain largely the same,
-        // but now call the _saveData methods after any modification.
-
         bindEvents() {
             document.getElementById('loginForm').addEventListener('submit', async e => { 
                 e.preventDefault(); 
-                await this._loadData(); // Load data before login
+                await this._loadData();
                 this.handleLogin(); 
             });
             document.getElementById('viewOnlyBtn').addEventListener('click', async () => { 
@@ -138,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // --- UTILITY --- //
         getLocalISODate(date) { const year = date.getFullYear(); const month = String(date.getMonth() + 1).padStart(2, '0'); const day = String(date.getDate()).padStart(2, '0'); return `${year}-${month}-${day}`; }
         
-        // --- VIEW RENDERING (largely unchanged) --- //
+        // --- VIEW RENDERING --- //
         renderDashboardView() {
             const stats = this.calculateStats();
             this.mainContent.innerHTML = `
@@ -205,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!this.mealData[this.currentUser]) this.mealData[this.currentUser] = {};
             if (!this.mealData[this.currentUser][dateStr]) this.mealData[this.currentUser][dateStr] = { lunch: false, dinner: false };
             this.mealData[this.currentUser][dateStr][meal] = status;
-            this._saveMealData(); // SAVE changes to Firebase
+            this._saveMealData();
             this.renderDayDetailView();
         }
         
@@ -242,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 this.paymentData[this.currentUser].push({ id: Date.now(), amount, date });
             }
-            this._savePaymentData(); // SAVE changes to Firebase
+            this._savePaymentData();
             this.resetPaymentForm();
             this.updatePaymentList();
         }
@@ -256,7 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
         handleDeletePayment(id) {
             if (confirm('Delete this payment?')) {
                 this.paymentData[this.currentUser] = this.paymentData[this.currentUser].filter(p => p.id != id);
-                this._savePaymentData(); // SAVE changes to Firebase
+                this._savePaymentData();
                 this.updatePaymentList();
             }
         }
