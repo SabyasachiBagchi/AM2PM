@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AM 2 PM Food Service - Meal Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="particles-js"></div>
+
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-utensils"></i> AM 2 PM Food Service</h2>
+                <p>Welcome to our meal tracking system</p>
+            </div>
+            <form id="loginForm" class="login-form">
+                <div class="form-group"><label for="username" class="form-label">Username</label><input type="text" id="username" class="form-control" placeholder="Enter username" required></div>
+                <div class="form-group"><label for="password" class="form-label">Password</label><input type="password" id="password" class="form-control" placeholder="Enter password" required></div>
+                <div id="loginError" class="login-error hidden"></div>
+                <div class="login-buttons">
+                    <button type="submit" class="btn btn--primary"><i class="fas fa-sign-in-alt"></i> Login</button>
+                    <button type="button" id="viewOnlyBtn" class="btn btn--outline"><i class="fas fa-eye"></i> View Only</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="app" class="app hidden">
+        <nav class="navbar">
+            <div class="navbar-content">
+                <div class="navbar-brand"><i class="fas fa-utensils"></i><span>AM 2 PM Food Service</span></div>
+                <div id="realtime-clock" class="realtime-clock"><span id="clock-time"></span><span id="clock-date"></span></div>
+                <div class="navbar-controls">
+                    <div class="user-selector"><label for="userSelect" class="form-label">Viewing:</label><select id="userSelect" class="form-control"></select></div>
+                    <div class="theme-switcher">
+                        <label for="themeToggle" class="theme-toggle-label"><i class="fas fa-moon"></i><input type="checkbox" id="themeToggle" class="theme-toggle-checkbox"><div class="theme-toggle-switch"></div><i class="fas fa-sun"></i></label>
+                    </div>
+                    <div class="user-info"><span id="currentUser"></span><button id="logoutBtn" class="btn btn--outline btn--sm"><i class="fas fa-sign-out-alt"></i> Logout</button></div>
+                </div>
+            </div>
+        </nav>
+        <main id="main-content" class="main-content"></main>
+        <div id="fab" class="fab hidden">
+            <button id="fabBtn" class="fab-button"><i class="fas fa-plus"></i></button>
+            <div id="fabMenu" class="fab-menu hidden">
+                <button id="addPaymentBtn" class="fab-menu-item"><i class="fas fa-credit-card"></i><span>Add Payment</span></button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
