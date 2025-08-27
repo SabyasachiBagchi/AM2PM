@@ -55,8 +55,6 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Ro
 .realtime-clock { text-align: center; }
 #clock-time { font-weight: 600; }
 #clock-date { font-size: var(--font-size-sm); color: var(--color-text-secondary); }
-
-/* Theme Switcher and other styles... */
 .theme-switcher { display: flex; align-items: center; }
 .theme-toggle-label { display: flex; align-items: center; cursor: pointer; gap: var(--space-8); color: var(--color-text-secondary); }
 .theme-toggle-checkbox { display: none; }
