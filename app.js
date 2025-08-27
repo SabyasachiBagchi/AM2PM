@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const firebaseConfig = {
       apiKey: "AIzaSyCCh25_zp7hIkWEmRhOgUejqMfQhe5lnBs",
       authDomain: "am2pm-ecdb4.firebaseapp.com",
-      databaseURL: "https://am2pm-ecdb4-default-rtdb.firebaseio.com/", // Correct URL for Realtime Database
+      databaseURL: "https://am2pm-ecdb4-default-rtdb.firebaseio.com/",
       projectId: "am2pm-ecdb4",
       storageBucket: "am2pm-ecdb4.appspot.com",
       messagingSenderId: "237983268562",
@@ -38,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
             this.initParticles();
         }
 
-        // --- DATA HANDLING WITH FIREBASE --- //
         async _loadData() {
             try {
                 const snapshot = await database.ref().once('value');
@@ -47,17 +46,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.paymentData = data.paymentData || { "Abid Hossain": [], "Ahsan Ansari": [] };
             } catch (error) {
                 console.error("Firebase load failed:", error);
-                alert("Could not connect to the database. Please check your internet connection and Firebase setup.");
+                alert("Could not connect to the database. Check your internet and Firebase setup.");
             }
         }
 
-        _saveMealData() {
-            database.ref('mealData').set(this.mealData);
-        }
-
-        _savePaymentData() {
-            database.ref('paymentData').set(this.paymentData);
-        }
+        _saveMealData() { database.ref('mealData').set(this.mealData); }
+        _savePaymentData() { database.ref('paymentData').set(this.paymentData); }
         
         bindEvents() {
             document.getElementById('loginForm').addEventListener('submit', async e => { 
@@ -104,13 +98,11 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         
-        // --- THEME, CLOCK, & PARTICLES --- //
         toggleTheme(isDark) { document.body.classList.toggle('dark-mode', isDark); localStorage.setItem('theme', isDark ? 'dark' : 'light'); }
         applyTheme() { const theme = localStorage.getItem('theme') || 'light'; this.toggleTheme(theme === 'dark'); document.getElementById('themeToggle').checked = (theme === 'dark'); }
         startClock() { const update = () => { const now = new Date(); document.getElementById('clock-time').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); document.getElementById('clock-date').textContent = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }); }; update(); setInterval(update, 1000); }
         initParticles() { particlesJS('particles-js', {"particles":{"number":{"value":60,"density":{"enable":true,"value_area":800}},"color":{"value":"#888888"},"shape":{"type":"circle"},"opacity":{"value":0.5,"random":true},"size":{"value":3,"random":true},"line_linked":{"enable":true,"distance":150,"color":"#888888","opacity":0.4,"width":1},"move":{"enable":true,"speed":4,"direction":"none","random":true,"straight":false,"out_mode":"out","bounce":false}},"interactivity":{"detect_on":"canvas","events":{"onhover":{"enable":true,"mode":"repulse"},"onclick":{"enable":true,"mode":"push"},"resize":true},"modes":{"repulse":{"distance":100,"duration":0.4},"push":{"particles_nb":4}}},"retina_detect":true}); }
 
-        // --- LOGIN & APP SETUP --- //
         handleLogin() {
             const user = document.getElementById('username').value; const pass = document.getElementById('password').value; const errDiv = document.getElementById('loginError');
             if ((user === 'AbidHossain' && pass === 'Abid@786') || (user === 'AhsanAnsari' && pass === 'Ahsan@786')) {
@@ -131,10 +123,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         logout() { location.reload(); }
 
-        // --- UTILITY --- //
         getLocalISODate(date) { const year = date.getFullYear(); const month = String(date.getMonth() + 1).padStart(2, '0'); const day = String(date.getDate()).padStart(2, '0'); return `${year}-${month}-${day}`; }
         
-        // --- VIEW RENDERING --- //
         renderDashboardView() {
             const stats = this.calculateStats();
             this.mainContent.innerHTML = `
@@ -193,7 +183,6 @@ document.addEventListener('DOMContentLoaded', () => {
             this.updatePaymentList();
         }
 
-        // --- DATA & LOGIC with SAVE calls --- //
         navigateMonth(dir) { this.currentDate.setMonth(this.currentDate.getMonth() + dir); this.renderDashboardView(); }
         
         updateMealStatus(meal, status) {
