@@ -1,7 +1,4 @@
-// app.js — fixed v8 (namespaced) Firebase + improved UI
-
 document.addEventListener('DOMContentLoaded', () => {
-  // --- Firebase Configuration (v8) ---
   const firebaseConfig = {
     apiKey: "AIzaSyCCh25_zp7hIkWEmRhOgUejqMfQhe5lnBs",
     authDomain: "am2pm-ecdb4.firebaseapp.com",
@@ -12,55 +9,43 @@ document.addEventListener('DOMContentLoaded', () => {
     appId: "1:237983268562:web:22b0194edda7f944dbb70b"
   };
 
-  // Initialize Firebase (v8 global)
+  let database = null;
   try {
     firebase.initializeApp(firebaseConfig);
+    database = firebase.database();
   } catch (e) {
     console.error('Firebase init error:', e);
   }
-  const database = firebase.database();
 
   class FoodServiceApp {
     constructor() {
-      // State
       this.isAdmin = false;
       this.currentUser = '';
       this.loggedInUser = '';
       this.currentDate = new Date();
       this.selectedDate = null;
       this.editingPaymentId = null;
-
-      // Data
       this.users = ["Abid Hossain", "Ahsan Ansari"];
       this.mealRate = 45;
       this.mealData = {};
       this.paymentData = {};
-
       this.init();
     }
 
-    init() {
-      this.mainContent = document.getElementById('main-content');
-      this.bindEvents();
-      this.applyTheme();
-      this.startClock();
-      this.initParticles();
-    }
-
-    // LOAD/SAVE to Realtime Database
     async _loadData() {
+      if (!database) { console.warn('No database, skipping load'); return; }
       try {
         const snapshot = await database.ref().once('value');
         const data = snapshot.val() || {};
         this.mealData = data.mealData || { "Abid Hossain": {}, "Ahsan Ansari": {} };
         this.paymentData = data.paymentData || { "Abid Hossain": [], "Ahsan Ansari": [] };
-      } catch (error) {
-        console.error("Firebase load failed:", error);
-        alert("Could not connect to the database. Check your internet and Firebase setup.");
+      } catch (err) {
+        console.error('Firebase load failed:', err);
       }
     }
-    _saveMealData() { database.ref('mealData').set(this.mealData); }
-    _savePaymentData() { database.ref('paymentData').set(this.paymentData); }
+
+    _saveMealData() { if (database) database.ref('mealData').set(this.mealData); }
+    _savePaymentData() { if (database) database.ref('paymentData').set(this.paymentData); }
 
     bindEvents() {
       // Login + View only
