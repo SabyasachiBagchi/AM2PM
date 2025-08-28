@@ -3,132 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Food Service Management - Firebase Edition</title>
+    <title>AM 2 PM Food Service - Meal Tracker</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Particles Background -->
     <div id="particles-js"></div>
 
-    <!-- Login Modal -->
     <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <h2 style="text-align: center; margin-bottom: var(--space-24);">🍽️ Food Service Login</h2>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="username">Email Address</label>
-                    <input type="email" id="username" class="form-control" placeholder="Enter your email" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
-                </div>
-                <div id="loginError" class="login-error hidden"></div>
-                <button type="submit" class="btn btn--primary" style="width: 100%; margin-bottom: var(--space-12);">Login</button>
-            </form>
-            <button id="viewOnlyBtn" class="btn btn--outline" style="width: 100%;">View Only Mode</button>
-            
-            <div style="margin-top: var(--space-24); padding-top: var(--space-16); border-top: 1px solid var(--color-border); font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+        <div class="modal-content glass-effect">
+            <div class="modal-header">
+                <h2><i class="fas fa-utensils"></i> AM 2 PM Food Service</h2>
+                <p>Welcome to the future of meal tracking</p>
             </div>
+            <form id="loginForm" class="login-form">
+                <div class="form-group"><label for="username" class="form-label">Username</label><input type="text" id="username" class="form-control" placeholder="Enter username" required></div>
+                <div class="form-group"><label for="password" class="form-label">Password</label><input type="password" id="password" class="form-control" placeholder="Enter password" required></div>
+                <div id="loginError" class="login-error hidden"></div>
+                <div class="login-buttons">
+                    <button type="submit" class="btn btn--primary"><i class="fas fa-sign-in-alt"></i> Login</button>
+                    <button type="button" id="viewOnlyBtn" class="btn btn--outline"><i class="fas fa-eye"></i> View Only</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <!-- Main App -->
     <div id="app" class="app hidden">
-        <!-- Keep all your existing navbar and content structure -->
-        <nav class="navbar">
+        <nav class="navbar glass-effect">
             <div class="navbar-content">
-                <div class="navbar-brand">
-                    <i class="fas fa-utensils"></i>
-                    <span>Food Service Pro</span>
-                    <span style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-left: var(--space-8);">- Firebase Edition</span>
-                </div>
-                
+                <div class="navbar-brand"><i class="fas fa-utensils"></i><span>AM 2 PM Food Service</span></div>
+                <div id="realtime-clock" class="realtime-clock"><span id="clock-time"></span><span id="clock-date"></span></div>
                 <div class="navbar-controls">
-                    <div class="realtime-clock">
-                        <div id="clock-time">--:--</div>
-                        <div id="clock-date">Loading...</div>
-                    </div>
-                    
+                    <div class="user-selector"><label for="userSelect" class="form-label">Viewing:</label><select id="userSelect" class="form-control"></select></div>
                     <div class="theme-switcher">
-                        <label class="theme-toggle-label">
-                            <i class="fas fa-moon"></i>
-                            <input type="checkbox" id="themeToggle" class="theme-toggle-checkbox">
-                            <span class="theme-toggle-switch"></span>
-                            <i class="fas fa-sun"></i>
-                        </label>
+                        <label for="themeToggle" class="theme-toggle-label"><i class="fas fa-moon"></i><input type="checkbox" id="themeToggle" class="theme-toggle-checkbox"><div class="theme-toggle-switch"></div><i class="fas fa-sun"></i></label>
                     </div>
-                    
-                    <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">
-                        <span id="currentUser">Not logged in</span>
-                    </div>
-                    
-                    <button id="logoutBtn" class="btn btn--outline">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
+                    <div class="user-info"><span id="currentUser"></span><button id="logoutBtn" class="btn btn--outline btn--sm"><i class="fas fa-sign-out-alt"></i> Logout</button></div>
                 </div>
             </div>
         </nav>
-
-        <main class="main-content">
-            <div id="main-content" class="view"></div>
-        </main>
-
-        <div id="fab" class="fab hidden">
-            <button id="fabBtn" class="fab-button">
-                <i class="fas fa-plus"></i>
-            </button>
+        <main id="main-content" class="main-content"></main>
+        <div id="fab" class="fab">
+            <button id="fabBtn" class="fab-button"><i class="fas fa-plus"></i></button>
             <div id="fabMenu" class="fab-menu hidden">
-                <div id="addPaymentBtn" class="fab-menu-item">
-                    <i class="fas fa-credit-card"></i>
-                    <span>Add Payment</span>
-                </div>
+                <button id="addPaymentBtn" class="fab-menu-item glass-effect"><i class="fas fa-credit-card"></i><span>Add Payment</span></button>
             </div>
         </div>
     </div>
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     
-    <!-- Firebase Configuration Script -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
-        import { getAuth } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js';
-        import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
-        
-        // Your actual Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCCh25_zp7hIkWEmRhOgUejqMfQhe5lnBs",
-            authDomain: "am2pm-ecdb4.firebaseapp.com",
-            projectId: "am2pm-ecdb4",
-            storageBucket: "am2pm-ecdb4.firebasestorage.app",
-            messagingSenderId: "237983268562",
-            appId: "1:237983268562:web:22b0194edda7f944dbb70b",
-            measurementId: "G-8MXP4HG6JH"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // Enable offline persistence
-        try {
-            console.log('Firebase initialized with project:', firebaseConfig.projectId);
-        } catch (error) {
-            console.warn('Firebase initialization warning:', error);
-        }
-
-        // Make Firebase instances available globally
-        window.firebaseApp = app;
-        window.firebaseAuth = auth;
-        window.firebaseDB = db;
-        
-        console.log('✅ Firebase connected to project: am2pm-ecdb4');
-    </script>
-
-    <!-- After (ES module - correct for imports in app.js) -->
-    <script type="module" src="app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
