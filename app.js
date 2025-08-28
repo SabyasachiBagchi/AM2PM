@@ -169,6 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
       this.showApp(false);
     }
     showApp(isAdmin) {
+    console.log('showApp called', { isAdmin });
       this.isAdmin = isAdmin;
       this.currentUser = this.isAdmin ? this.loggedInUser : this.users[0];
 
@@ -234,6 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>`;
       this.renderCalendar();
+      console.log('renderDashboardView finished');
     }
 
     renderCalendar() {
